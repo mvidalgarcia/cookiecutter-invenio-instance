@@ -5,8 +5,7 @@ import json
 
 from invenio_search import current_search
 
-
-def test_simple_flow(client):
+def test_simple_flow(client, location):
     """Test simple flow using REST API."""
     headers = [('Content-Type', 'application/json')]
     data = {
@@ -24,4 +23,7 @@ def test_simple_flow(client):
 
     # retrieve record
     res = client.get('https://localhost:5000/records/1')
+    # Check if the files link is present
+    assert res.json['links']['files'].endswith('{0}/files') == \
+        'https://localhost:5000/records/1/files'
     assert res.status_code == 200
