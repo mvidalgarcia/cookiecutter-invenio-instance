@@ -14,6 +14,11 @@ def bucket_from_context(_, context):
     record = (context or {}).get('record', {})
     return record.get('_bucket', missing)
 
+def files_from_context(_, context):
+    """Get the record's files from context."""
+    record = (context or {}).get('record', {})
+    return record.get('_files', missing)
+
 
 class PersonIdsSchemaV1(StrictKeysMixin):
     """Ids schema."""
@@ -41,6 +46,7 @@ class MetadataSchemaV1(StrictKeysMixin):
     publication_date = DateString()
     contributors = Nested(ContributorSchemaV1, many=True, required=True)
     _bucket = GenFunction(deserialize=bucket_from_context, load_only=True)
+    _files = GenFunction(deserialize=files_from_context, load_only=True)
 
 
 class RecordSchemaV1(StrictKeysMixin):
@@ -54,3 +60,5 @@ class RecordSchemaV1(StrictKeysMixin):
     id = PersistentIdentifier()
     _bucket = GenFunction(
         serialize=bucket_from_context, deserialize=bucket_from_context)
+    _files = GenFunction(
+        serialize=files_from_context, deserialize=files_from_context)
